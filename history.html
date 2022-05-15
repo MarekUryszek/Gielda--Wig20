@@ -1,0 +1,83 @@
+{%extends "base.html" %}
+
+{% block title%}
+    Historia transakcji
+{% endblock %}
+
+
+{% block content%}
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">This entry will be deleted</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="idDeleteModalBody">
+          ...
+        </div>
+        <div class="modal-footer">
+          <form action="" method="GET" id="confirmDeleteForm">  
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+      $('.delete-confirm').click(function() {
+        var desc =$(this).attr('data-desc');
+        var url = $(this).attr('data-url');
+
+        $('#idDeleteModalBody').text(desc);
+        $("#confirmDeleteForm").attr("action",url);
+      });
+    });
+    </script>
+
+<div class="container">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Firma</th>
+                <th scope="col">Ilość</th>
+                <th scope="col">Data</th>
+                <th scope="col">Operacje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <th scope="row">{{ transaction.id}}</th>
+                <td>{{ transaction.currency}}</td>
+                <td>{{ transaction.amount}}</td>
+                <td>{{ transaction.trans_date}}</td>
+                <td>
+                    <a href="#" class="btn btn-primary btn-sm" role="'button">Actions...</a>
+                    <a href="#" class="btn btn-success btn-sm" role="'button">Edit...</a>
+                    <a href="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" class="btn btn-danger btn-sm" role="'button">Delete...</a>
+                
+                    <a type="button" class="btn btn-danger btn-sm delete-confirm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        data-desc="{{ 'Delete transaction for {} {} ({})?'.format(transaction.amount,transaction.currency,transaction.trans_date)}}"
+                        data-url="{{ url_for('delete_transaction', transaction_id=transaction.id)}}">
+                        Delete
+                    </a>        
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>   
+{% endblock %}
